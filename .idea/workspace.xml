@@ -5,19 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5df92e36-ff15-41aa-bbb8-6f0e644f4199" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-discovery/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-discovery/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-discovery/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-discovery/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-discovery/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-discovery/src/main/java/com/ecommerce/service_discovery/ServiceDiscoveryApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-discovery/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-discovery/src/test/java/com/ecommerce/service_discovery/ServiceDiscoveryApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +31,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/discovery-service",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Aniket Patel/Desktop/DSA/codebase/ecommerce_eda",
     "node.js.detected.package.eslint": "true",
@@ -87,7 +75,7 @@
       <updated>1751617915083</updated>
       <workItem from="1751617916133" duration="158000" />
       <workItem from="1751618080680" duration="113000" />
-      <workItem from="1751618206637" duration="371000" />
+      <workItem from="1751618206637" duration="1535000" />
     </task>
     <servers />
   </component>
