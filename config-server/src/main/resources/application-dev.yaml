@@ -1,11 +1,14 @@
+######### Service Port Config #########
 server:
   port: 0
 
+######### Eureka Client Config #########
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:8761/eureka/}
 
+######### Config Server Config #########
 spring:
   cloud:
     config:
@@ -17,13 +20,24 @@ spring:
           skip-ssl-validation: true
           timeout: 5
 
+######### Logging Level Config #########
 logging:
   level:
     root: debug
 
+
+######### Prometheus Pushgateway Config #########
 management:
   endpoints:
     web:
       exposure:
         include: *
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        pushgateway:
+          enabled: true
+          address: ${PUSHGATEWAY_ADDRESS:http://localhost:9091}
+          job: config-server
 
