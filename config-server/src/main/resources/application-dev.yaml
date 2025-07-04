@@ -21,4 +21,9 @@ logging:
   level:
     root: debug
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *
 
