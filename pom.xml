@@ -19,6 +19,7 @@
     <description>Event-driven e-commerce microservices backend with Spring Boot and Spring Cloud, leveraging distributed patterns and full observability for scalable, resilient operations</description>
     <modules>
         <module>service-discovery</module>
+        <module>config-server</module>
     </modules>
     <packaging>pom</packaging>
 
