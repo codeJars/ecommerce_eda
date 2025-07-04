@@ -26,6 +26,7 @@ logging:
   level:
     root: info
 
+
 ######### Prometheus Pushgateway Config #########
 management:
   endpoints:

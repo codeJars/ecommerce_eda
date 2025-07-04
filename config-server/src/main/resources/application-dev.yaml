@@ -25,6 +25,7 @@ logging:
   level:
     root: debug
 
+
 ######### Prometheus Pushgateway Config #########
 management:
   endpoints:
@@ -39,8 +40,4 @@ management:
           enabled: true
           address: ${PUSHGATEWAY_ADDRESS:http://localhost:9091}
           job: config-server
-
-
-
-
 
