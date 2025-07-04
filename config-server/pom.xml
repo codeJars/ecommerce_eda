@@ -9,16 +9,21 @@
 		<version>0.1.0</version>
 	</parent>
 
-	<artifactId>discovery-service</artifactId>
-	<name>service-discovery</name>
-	<description>Netflix Eureka Service Discovery Server</description>
+	<artifactId>config-server</artifactId>
+	<name>config-server</name>
+	<description>Configuration server (git repo)</description>
 	<packaging>jar</packaging>
 
 	<dependencies>
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+			<artifactId>spring-cloud-config-server</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
 		<dependency>
@@ -44,4 +49,10 @@
 	</build>
 
 </project>
+
+
+
+
+
+
 
