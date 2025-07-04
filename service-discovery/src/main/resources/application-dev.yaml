@@ -1,6 +1,8 @@
+######### Service Port Config #########
 server:
-  port: 8761
+  port: 0
 
+######### Eureka Server Config #########
 eureka:
   client:
     register-with-eureka: false
@@ -8,12 +10,22 @@ eureka:
   server:
     enable-self-preservation: false
 
+######### Logging Level Config #########
 logging:
   level:
     root: debug
 
+######### Prometheus Pushgateway Config #########
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: *
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        pushgateway:
+          enabled: true
+          address: ${PUSHGATEWAY_ADDRESS:http://localhost:9091}
+          job: service-discovery

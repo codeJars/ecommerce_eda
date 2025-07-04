@@ -1,12 +1,23 @@
+######### Service Port Config #########
 server:
-  port: 8761
+  port: 0
 
+######### Logging Level Config #########
 logging:
   level:
     root: info
 
+######### Prometheus Pushgateway Config #########
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus,metrics
+        include: health,info,prometheus, metrics
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        pushgateway:
+          enabled: true
+          address: ${PUSHGATEWAY_ADDRESS}
+          job: service-discovery
