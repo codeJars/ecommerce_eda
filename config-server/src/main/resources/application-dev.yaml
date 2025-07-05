@@ -1,6 +1,6 @@
 ######### Service Port Config #########
 server:
-  port: 0
+  port: 8888
 
 ######### Eureka Client Config #########
 eureka:
@@ -31,13 +31,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: *
+        include: '*'
   prometheus:
     metrics:
       export:
         enabled: true
-        pushgateway:
-          enabled: true
-          address: ${PUSHGATEWAY_ADDRESS:http://localhost:9091}
-          job: config-server
 
