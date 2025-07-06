@@ -6,7 +6,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_SERVICE_URL:http://service-discovery:8761/eureka/}
 
 ######### Config Server Config #########
 spring:
@@ -19,11 +19,6 @@ spring:
           force-pull: true
           skip-ssl-validation: true
           timeout: 5
-
-######### Logging Level Config #########
-logging:
-  level:
-    root: debug
 
 
 ######### Prometheus Pushgateway Config #########

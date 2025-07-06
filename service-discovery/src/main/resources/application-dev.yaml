@@ -10,11 +10,6 @@ eureka:
   server:
     enable-self-preservation: false
 
-######### Logging Level Config #########
-logging:
-  level:
-    root: debug
-
 ######### Prometheus Pushgateway Config #########
 management:
   endpoints:

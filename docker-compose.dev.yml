@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+
+  service-discovery:
+    build:
+      context: ./service-discovery
+      args:
+        PROJECT_VERSION: 0.1.0
+    container_name: service-discovery
+    expose:
+      - 8761 #by default all ports are exposed for cont-to-cont comm, this is only for doc purpose
+    ports:
+      - 8761:8761
+    restart: always
+
+  config-server:
+    build:
+      context: ./config-server
+      args:
+        PROJECT_VERSION: 0.1.0
+    container_name: config-server
+    expose:
+      - 8888  #by default all ports are exposed for cont-to-cont comm, this is only for doc purpose
+    restart: always
+    depends_on:
+      - service-discovery
