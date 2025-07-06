@@ -2,11 +2,6 @@
 server:
   port: 8761
 
-######### Logging Level Config #########
-logging:
-  level:
-    root: info
-
 ######### Prometheus Pushgateway Config #########
 management:
   endpoints:

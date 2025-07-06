@@ -21,12 +21,6 @@ spring:
           timeout: 10
           default-label: main
 
-######### Logging Level Config #########
-logging:
-  level:
-    root: info
-
-
 ######### Prometheus Pushgateway Config #########
 management:
   endpoints:

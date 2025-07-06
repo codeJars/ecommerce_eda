@@ -4,3 +4,8 @@ spring:
   profiles:
     active:
         - dev
+
+management:
+  endpoint:
+    health:
+      show-details: always
