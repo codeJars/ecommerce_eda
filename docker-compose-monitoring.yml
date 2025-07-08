@@ -106,8 +106,21 @@ services:
       - elasticsearch
 
 
-  ###################################### DISTRIBUTED TRACING ##################################
-
+###################################### DISTRIBUTED TRACING ##################################
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    #environment:
+      #- KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      #- STORAGE_TYPE=kafka
+      #- STORAGE_TYPE=elasticsearch
+      #- ES_HOSTS=http://elasticsearch:9200
+      #- ES_USER=zipkin_user
+      #- ES_PASSWORD=zipkinadmin
+      # Create zipkin_user with password zipkinadmin and assign it to a role with write access to the zipkin index.
+      # Use the same method as for fluentd_user above, but change the role name and user name accordingly.
 
 
 

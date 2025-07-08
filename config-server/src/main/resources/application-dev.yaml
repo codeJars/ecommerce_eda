@@ -14,7 +14,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/codeJars/ecommerce_eda_config.git
+          uri: ${CONFIG_SERVER_GIT_REPO:https://github.com/codeJars/ecommerce_eda_config.git}
           clone-on-start: false
           force-pull: true
           skip-ssl-validation: true
@@ -31,4 +31,14 @@ management:
     metrics:
       export:
         enabled: true
+
+######### Micrometer Tracing config ##########
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      type: b3  # b3 header -> used by Zipkin, Brave (Spring's default)	X-B3-TraceId, X-B3-SpanId, X-B3-Sampled
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT:http://zipkin:9411/api/v2/spans}
 

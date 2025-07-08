@@ -5,11 +5,14 @@
         <!-- Console appender with JSON layout -->
         <Console name="Console" target="SYSTEM_OUT">
             <JsonLayout
+                    complete="false"
                     compact="true"
                     eventEol="true"
                     stacktraceAsString="true"
                     includeStacktrace="true"
-            />
+                    properties="true"
+            >
+            </JsonLayout>
         </Console>
     </Appenders>
 
