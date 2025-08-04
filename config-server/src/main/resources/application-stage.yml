@@ -1,0 +1,29 @@
+######### Service Port Config #########
+server:
+  port: 8888
+
+######### Config Server Config #########
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          clone-on-start: true
+          force-pull: true
+          skip-ssl-validation: false
+          timeout: 10
+          default-label: main
+
+management:
+  ######### Prometheus Config #########
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus, metrics
+
+  ######### Micrometer Tracing config ##########
+  tracing:
+    sampling:
+      probability: 0.1
+    propagation:
+      type: b3  # b3 header -> used by Zipkin, Brave (Spring's default)	X-B3-TraceId, X-B3-SpanId, X-B3-Sampled

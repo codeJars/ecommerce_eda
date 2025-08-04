@@ -1,0 +1,28 @@
+spring:
+  application:
+      name: service-discovery
+  profiles:
+    active:
+        - dev
+
+  ##### Config import from config server #####
+  config:
+    import: configserver:${CONFIG_SERVER_URI}
+
+
+management:
+
+  endpoint:
+    health:
+      show-details: always
+
+  ######### Micrometer Tracing config #########
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT}    #http://zipkin:9411/api/v2/spans
+
+  ######### Prometheus Config #########
+  prometheus:
+    metrics:
+      export:
+        enabled: true

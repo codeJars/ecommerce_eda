@@ -208,6 +208,3 @@ A cloud-native, production-grade **E-Commerce Backend System** designed with **S
 ---
 
 > *Built for scale. Designed with purpose. Delivered with precision.*
-
-
-

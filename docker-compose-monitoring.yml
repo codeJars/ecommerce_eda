@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+
+  ############################## METRICS MONITORING ###############################
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./monitoring-cfg/metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring-cfg/metrics/grafana/datasources:/etc/grafana/provisioning/datasources
+
+
+
+  ############################## LOG MONITORING #####################################
+  elasticsearch:
+    image: elasticsearch:9.0.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node  #Elasticsearch is normally built to run as a cluster with multiple nodes
+      - ELASTIC_PASSWORD=admin
+      ### change kibana_system password using from elasticsearch container
+      ### curl -u elastic:your_elastic_password -X POST "http://localhost:9200/_security/user/kibana_system/_password" \
+      #  -H "Content-Type: application/json" \
+      #  -d '{
+      #    "password": "your_new_kibana_password_here"
+      #  }'
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      #Sets JVM heap size options for Elasticsearch. Min Heap and Max Heap size are both set to 512MB
+      #Important because Elasticsearch is very memory intensive.
+      #In production, you often use 50% of available RAM (up to ~30 GB), but for local or dev, small values like 512m are fine.
+    expose:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+
+  fluentd:
+    build:
+      context: /monitoring-cfg/log/fluentd
+    container_name: fluentd
+    user: root
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./monitoring-cfg/log/fluentd/conf:/fluentd/etc
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - FLUENT_ELASTICSEARCH_HOST=elasticsearch
+      - FLUENT_ELASTICSEARCH_PORT=9200
+      - FLUENT_ELASTICSEARCH_USER=fluentd_user
+      - FLUENT_ELASTICSEARCH_PASSWORD=fluentdadmin
+      ##### create a fluentd_user, pass and fluent_writer role (custom restricted role) using
+      # for role creation
+      #curl -u elastic:your_elastic_password -X POST "http://localhost:9200/_security/role/fluentd_writer" \
+      #  -H "Content-Type: application/json" \
+      #  -d '{
+      #    "cluster": [ "manage_index_templates", "monitor" ],
+      #    "indices": [
+      #      {
+      #        "names": [ "fluentd-logs-*" ],
+      #        "privileges": [ "write", "create", "create_index" ]
+      #      }
+      #    ]
+      #  }'
+      # for user creation
+      #curl -u elastic:your_elastic_password -X POST "http://localhost:9200/_security/user/fluentd_user" \
+      #  -H "Content-Type: application/json" \
+      #  -d '{
+      #    "password" : "fluentd_pass",
+      #    "roles" : [ "fluentd_writer" ],
+      #    "full_name" : "Fluentd Log User",
+      #    "email" : "fluentd@example.com"
+      #  }'
+    depends_on:
+      - elasticsearch
+    ports:
+      - "24224:24224"       # Fluentd forward input (optional)
+      - "24224:24224/udp"
+
+
+  kibana:
+    image: kibana:9.0.2
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=kibanaadmin
+      ### change kibana_system password using from elasticsearch container
+      ### curl -u elastic:your_elastic_password -X POST "http://localhost:9200/_security/user/kibana_system/_password" \
+      #  -H "Content-Type: application/json" \
+      #  -d '{
+      #    "password": "your_new_kibana_password_here"
+      #  }'
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+
+###################################### DISTRIBUTED TRACING ##################################
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    #environment:
+      #- KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      #- STORAGE_TYPE=kafka
+      #- STORAGE_TYPE=elasticsearch
+      #- ES_HOSTS=http://elasticsearch:9200
+      #- ES_USER=zipkin_user
+      #- ES_PASSWORD=zipkinadmin
+      # Create zipkin_user with password zipkinadmin and assign it to a role with write access to the zipkin index.
+      # Use the same method as for fluentd_user above, but change the role name and user name accordingly.
+
+
+
+
+volumes:
+  es-data:

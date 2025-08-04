@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+
+    <Appenders>
+        <!-- Console appender with JSON layout -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <JsonLayout
+                    complete="false"
+                    compact="true"
+                    eventEol="true"
+                    stacktraceAsString="true"
+                    includeStacktrace="true"
+                    properties="true"
+            />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+
+        <!-- Development profile -->
+        <SpringProfile name="dev">
+            <Root level="debug">
+                <AppenderRef ref="Console"/>
+            </Root>
+        </SpringProfile>
+
+        <!-- Staging profile -->
+        <SpringProfile name="stage">
+            <Root level="info">
+                <AppenderRef ref="Console"/>
+            </Root>
+        </SpringProfile>
+
+        <!-- Production profile -->
+        <SpringProfile name="prod">
+            <Root level="info">
+                <AppenderRef ref="Console"/>
+            </Root>
+        </SpringProfile>
+
+    </Loggers>
+
+</Configuration>

@@ -1,0 +1,28 @@
+######### Service Port Config #########
+server:
+  port: 8080
+
+spring:
+  ####### r2dbc postgresql config ####
+  r2dbc:
+    pool:
+      initial-size: 2
+      max-size: 5
+      max-idle-time: 30m
+      max-life-time: 60m
+      validation-query: SELECT 1
+
+management:
+  ######### Prometheus Config #########
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+######### Micrometer Tracing config ##########
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      type: b3  # b3 header -> used by Zipkin, Brave (Spring's default)	X-B3-TraceId, X-B3-SpanId, X-B3-Sampled
+

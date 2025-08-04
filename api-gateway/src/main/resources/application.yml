@@ -1,0 +1,66 @@
+spring:
+
+  application:
+    name: api-gateway
+  profiles:
+    active:
+      - dev
+
+  ##### Config import from config server #####
+  config:
+    import: configserver:${CONFIG_SERVER_URI}
+
+  #### gateway config ####
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: eureka-ui
+              uri: ${EUREKA_SERVICE_URI}
+              predicates:
+                - Path=/eureka/**
+              filters:
+                - StripPrefix=1
+            - id: eureka-public-test
+              uri: ${EUREKA_SERVICE_URI}
+              predicates:
+                - Path=/public/**
+              filters:
+                - StripPrefix=1
+            - id: iam-service
+              uri: lb://iam-service
+              predicates:
+                - Path=/auth/**
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWK_SET_URI}
+
+
+######### Eureka Client Config #########
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVICE_URI}
+
+management:
+
+  endpoint:
+    health:
+      show-details: always
+
+  ######### Micrometer Tracing config #########
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT}    #http://zipkin:9411/api/v2/spans
+
+  ######### Prometheus Config #########
+  prometheus:
+    metrics:
+      export:
+        enabled: true

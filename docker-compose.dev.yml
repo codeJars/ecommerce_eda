@@ -1,0 +1,97 @@
+services:
+
+  config-server:
+    build:
+      context: ./config-server
+      args:
+        PROJECT_VERSION: 0.1.0
+    container_name: config-server
+    expose:
+      - 8888  #by default all ports are exposed for cont-to-cont comm, this is only for doc purpose
+    restart: always
+    environment:
+      - CONFIG_SERVER_GIT_REPO=https://github.com/codeJars/ecommerce_eda_config.git
+      - ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+
+
+  service-discovery:
+    build:
+      context: ./service-discovery
+      args:
+        PROJECT_VERSION: 0.1.0
+    container_name: service-discovery
+    expose:
+      - 8761 #by default all ports are exposed for cont-to-cont comm, this is only for doc purpose
+    ports:
+      - 8761:8761
+    restart: always
+    environment:
+      - CONFIG_SERVER_URI=http://config-server:8888
+      - ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      #- EUREKA_SERVICE_URI=http://service-discovery:8761/eureka/
+    depends_on:
+      - config-server
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      args:
+        PROJECT_VERSION: 0.1.0
+    container_name: api-gateway
+    expose:
+      - 8080 #by default all ports are exposed for cont-to-cont comm, this is only for doc purpose
+    ports:
+      - 8080:8080
+    restart: always
+    environment:
+      - CONFIG_SERVER_URI=http://config-server:8888
+      - ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - EUREKA_SERVICE_URI=http://service-discovery:8761/eureka/
+      - JWK_SET_URI=http://iam-service:8080/.well-known/jwks.json
+    depends_on:
+      - config-server
+      - service-discovery
+
+  iam-service:
+    build:
+      context: ./iam-service
+      args:
+        PROJECT_VERSION: 0.1.0
+    container_name: iam-service
+    expose:
+      - 8080 #by default all ports are exposed for cont-to-cont comm, this is only for doc purpose
+    ports:
+      - 8081:8080
+    restart: always
+    environment:
+      - CONFIG_SERVER_URI=http://config-server:8888
+      - ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - EUREKA_SERVICE_URI=http://service-discovery:8761/eureka/
+      - JWT_PRIVATE_KEY=MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCoZfDP7hm3uJOqnroepfbzeSzXqdYV2LqiDyacvO89PbqYumUSIzi6uMWtZrUwyK/HMLUP4qDdYgOp1xjfOZ90i0pdUVBL9YsrPJ0tDIrb5pnPRjLJT0ubtf/En+3wWUom5f3wUHfMgcL6uIdOx4g951gCLyoQ1qj7SguIpTu3rom5Cu/rp0rC4m4CK0KJdsvG/VXB0Fk6BHuNorUMyR29OkWLisOiKbkqtDEB8qr50vLqkMp4AfBjDtkTAzB6t7swADbUGTcUHVIXSH7R15r3dRwYECc+4WRUISlc7u3Ms/HDOa0wosvZIZ4Nid6LeYlgNL8yQg1ln62OcARlTlfdAgMBAAECggEAJF/AoGlBzNllrBkVAsG+keC+uubIg3eI+LBlGr4EvymyQIMiicRp4ItAx6/Du4Hd1hzDP2cocClXuTvo926u7rGXooiJ255yLSiumqh25gDtgEQdfDZQkpXBZWtWLfBbgAN10o7PEbGFuDpbn7yhxR1PeUlOwMxdO8pGq4FlYMtMyH5DQrwyKSfydn30izHsDm2cATtSuftDUc5Itsv0kUHH/V01O7yACC2oCOkB5kyyxO5czlPNfXg9HRmvVBI4xckWB9W3oIOg/7C52QvJvteLNlQ9EZ/nS/fckUGeaV56ek+qB0Ixr51x4+b1Oh/qilr9X9kuZeauDvHH3bwwAQKBgQDbH7I/0QvMZU4uJX3Xe2/HG8KWi3yY30+22sWY8Zkhq5w0JQDsExgylQ8sHgpxNbowwLk2Zc4Waj1lzGU1OlRdk8W7Ufg+Gh8WpME+iU5kSSDz/0xRiSksptS9HVUFZouT/bPRkej0N9ZdzTnVALKV6NuhZwn8+voO4dcCgB3M3QKBgQDEvOGNudSfnbQoKezyhVass3Ic6MtTLKn3dbXJC0LgRQGnOb2EEKopHPTNgZUh1cWySs6mSZn+jSZTtni4YWsEoscJRZZijEWHadEURUBR54YarjkIBcdkPR6NNryQKpu/DOFuHx6pqdhs29JLo2xfkZQl6qOpIt6MtI7B0EiHAQKBgBRLjUDn5cXapDEV+9/XaPTyF0XGSZYHKOTwwlh2GA7MTD1wJ/O1mQomUC9v4Nu3dDVLxFvLdhkRYfppwf36FxJLu4asAugNl0+LlvJp2T7knw66WKE8qPmfwhh5/QPxCYB9gQgqEX99JHevqGmYFPJZjO4YEw7BWCPEuxtaLmhpAoGASS2clDPwE6L8VQgrO5Y/RCPHKVup7Xkqi4I8KNjIelUQpVwD0zDDqmE76YjuqNQ0IfpTXWT5I8bq3656vtJ1lRbbA+bfZi6Y2iKRA4Iyx4RfzGLLkeFcZjuZtpsKjnFa1zh6TZTDugYUG4G0ejACapXiziu1zn7K2vl6NDs+DwECgYEAhhYn2oZQKmnRRhSU3RVDeDQKgSKROYGRVZd+8kLMg0H1coKzIaqzU9L7hbxjVwrUqGGY7v0/k5k8WjFUPeU6pSx5S54mYYeIxxu5rTTLES3DiwugHlezNno4tX1B/LgGw102PwDOLjWg1sWSHuwW1wKRV0TSBXpQ/g9x043na9s=
+      - JWT_PUBLIC_KEY=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqGXwz+4Zt7iTqp66HqX283ks16nWFdi6og8mnLzvPT26mLplEiM4urjFrWa1MMivxzC1D+Kg3WIDqdcY3zmfdItKXVFQS/WLKzydLQyK2+aZz0YyyU9Lm7X/xJ/t8FlKJuX98FB3zIHC+riHTseIPedYAi8qENao+0oLiKU7t66JuQrv66dKwuJuAitCiXbLxv1VwdBZOgR7jaK1DMkdvTpFi4rDoim5KrQxAfKq+dLy6pDKeAHwYw7ZEwMwere7MAA21Bk3FB1SF0h+0dea93UcGBAnPuFkVCEpXO7tzLPxwzmtMKLL2SGeDYnei3mJYDS/MkINZZ+tjnAEZU5X3QIDAQAB
+      - IAM_DB_URL=postgresql://postgres-iam/iam_db
+      - IAM_DB_USERNAME=iamservice
+      - IAM_DB_PASSWORD=iamservice
+      - KAFKA_BOOTSTRAP_SERVERS=kafka-1:9092,kafka-2:9092,kafka-3:9092
+      - ADMIN_EMAIL=admin
+      - ADMIN_PASSWORD=admin
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - config-server
+      - service-discovery
+      - postgres-iam
+
+
+  postgres-iam:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: iam_db
+      POSTGRES_USER: iamservice
+      POSTGRES_PASSWORD: iamservice
+    volumes:
+      - iam_data:/var/lib/postgresql/data
+
+volumes:
+  iam_data:
+
+
