@@ -1,4 +1,12 @@
-# 🍊 Reactive E-Commerce Microservices Backend
+# 📦 Reactive E-Commerce Microservices Backend
+
+## 🚧 Development Status
+
+- This project is currently in the **active development phase**
+- All services are being iteratively implemented and tested
+- CI/CD, advanced observability, and failure recovery workflows are being fine-tuned
+- **Contributions are welcome**, but expect ongoing changes
+
 
 ---
 
