@@ -1,0 +1,88 @@
+spring:
+
+  application:
+    name: iam-service
+  profiles:
+    active:
+      - dev
+
+  ##### Config import from config server #####
+  config:
+    import: configserver:${CONFIG_SERVER_URI}
+
+  ### r2dbc postgresql config ####
+  r2dbc:
+    url: r2dbc:${IAM_DB_URL}  # r2dbc:postgresql://postgres:5432/iam
+    username: ${IAM_DB_USERNAME}  # postgres
+    password: ${IAM_DB_PASSWORD}  # postgres
+
+  ### flyway config ###
+  flyway:
+    enabled: true
+    url: jdbc:${IAM_DB_URL} # r2dbc:postgresql://postgres:5432/iam
+    user: ${IAM_DB_USERNAME}
+    password: ${IAM_DB_PASSWORD}
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+#    baseline-version: 1
+
+  ### Kafka Config ###
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}  # kafka:9092
+    topics:
+      user-created: user-created
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all                              # Wait for full commit from all replicas
+      retries: 3                             # Number of retries on failure
+      batch-size: 16384                      # 16 KB default, can tune for throughput
+#      linger-ms: 5                           # Delay to allow batching (latency tradeoff)
+      buffer-memory: 33554432                # 32 MB buffer size for batching
+      compression-type: lz4                  # Compression (snappy/lz4/gzip) to reduce payload size
+      client-id: iam-service-producer        # Helps track producer in metrics/logs
+    consumer:
+      group-id: iam-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    properties:
+      max.in.flight.requests.per.connection: 5
+      enable.idempotence: true              # Strongly recommended to avoid duplicates
+      delivery.timeout.ms: 120000
+      request.timeout.ms: 30000
+
+
+
+######### Eureka Client Config #########
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVICE_URI}
+
+management:
+
+  endpoint:
+    health:
+      show-details: always
+
+  ######### Micrometer Tracing config #########
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT}    #http://zipkin:9411/api/v2/spans
+
+  ######### Prometheus Config #########
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+security:
+  jwt:
+    private-key: ${JWT_PRIVATE_KEY} # RSA private key for signing JWT tokens
+    public-key: ${JWT_PUBLIC_KEY}   # RSA public key for verifying JWT tokens
+
+admin:
+  email: ${ADMIN_EMAIL:}
+  password: ${ADMIN_PASSWORD:}

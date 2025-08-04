@@ -18,8 +18,10 @@
     <name>ecommerce-eda-api</name>
     <description>Event-driven e-commerce microservices backend with Spring Boot and Spring Cloud, leveraging distributed patterns and full observability for scalable, resilient operations</description>
     <modules>
-        <module>service-discovery</module>
         <module>config-server</module>
+        <module>service-discovery</module>
+        <module>api-gateway</module>
+        <module>iam-service</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -41,6 +43,58 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+<!--            for DOS attack with large JWT/JWK-->
+<!--            <dependency>-->
+<!--                <groupId>com.nimbusds</groupId>-->
+<!--                <artifactId>nimbus-jose-jwt</artifactId>-->
+<!--                <version>9.37.4</version>-->
+<!--            </dependency>-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>0.12.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>0.12.6</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>0.12.6</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>10.3.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>11.10.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>11.10.3</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.38</version>
+                <scope>provided</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -51,6 +105,15 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.11.0</version>
+                    <configuration>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>1.18.38</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

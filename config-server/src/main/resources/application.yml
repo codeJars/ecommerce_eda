@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active:
+      - dev
+
+  ######### Config Server Config #########
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${CONFIG_SERVER_GIT_REPO}    #https://github.com/codeJars/ecommerce_eda_config.git
+
+management:
+
+  endpoint:
+    health:
+      show-details: always
+
+  ######### Micrometer Tracing config #########
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT}    #http://zipkin:9411/api/v2/spans
+
+  ######### Prometheus Config #########
+  prometheus:
+    metrics:
+      export:
+        enabled: true
